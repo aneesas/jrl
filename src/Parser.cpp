@@ -101,7 +101,9 @@ json Parser::parseJson(std::string input_file_name, bool decompress_from_cbor) c
   json parsed_json;
   if (decompress_from_cbor) {
     std::ifstream ifs(input_file_name, std::ios::binary);
-    parsed_json = json::from_cbor(nlohmann::detail::input_adapter{ifs});
+    //parsed_json = json::from_cbor(nlohmann::detail::input_adapter{ifs});
+    std::vector<uint8_t> buffer(std::istreambuf_iterator<char>(ifs), {});
+    parsed_json = json::from_cbor(buffer);
   } else {
     std::ifstream ifs(input_file_name);
     parsed_json = json::parse(ifs);

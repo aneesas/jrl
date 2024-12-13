@@ -4,6 +4,8 @@
  * Projects requiring fast runtime should use custom initialization techniques.
  **/
 #pragma once
+#include <optional>
+
 #include <gtsam/geometry/BearingRange.h>
 
 #include "jrl/Dataset.h"
