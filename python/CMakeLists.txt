@@ -1,4 +1,7 @@
 message(STATUS "================  PYTHON BINDINGS ENABLED. BUILDING BINDINGS  ======================")
+if (POLICY CMP0057)
+    cmake_policy(SET CMP0057 NEW)
+endif()
 
 # Find Python Interpreter
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
