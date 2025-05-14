@@ -33,6 +33,7 @@ namespace io_measurements {
 /**********************************************************************************************************************/
 /// @brief Parses a covariance matrix from json
 gtsam::Matrix parseCovariance(json input_json, int d);
+gtsam::Matrix parseCovarianceAsInformation(json input_json, int d);
 json serializeCovariance(gtsam::Matrix covariance);
 
 /**********************************************************************************************************************/
@@ -78,11 +79,18 @@ gtsam::NonlinearFactor::shared_ptr parseNoiseModel2(std::function<MEASURE(json)>
   json covariance_json = input_json["covariance"];
 
   // Construct the factor
+  // (aneesa) ADDED THIS:
+  // Compute the optimal (information-divergence-minimizing) values of precisions kappa and tau
+  // Use Gaussian::Information to create a noise model with kappa and tau on the diagonal
   MEASURE measured = val_parser_fn(measurement_json);
   int d = gtsam::traits<MEASURE>::GetDimension(measured);
+//  typename FACTOR::shared_ptr factor =
+//      boost::make_shared<FACTOR>(key1_json.get<uint64_t>(), key2_json.get<uint64_t>(), measured,
+//                                 gtsam::noiseModel::Gaussian::Covariance(parseCovariance(covariance_json, d)));
   typename FACTOR::shared_ptr factor =
       boost::make_shared<FACTOR>(key1_json.get<uint64_t>(), key2_json.get<uint64_t>(), measured,
-                                 gtsam::noiseModel::Gaussian::Covariance(parseCovariance(covariance_json, d)));
+                                 gtsam::noiseModel::Gaussian::Information(parseCovarianceAsInformation(covariance_json, d)));
+//  factor->print();
   return factor;
 }
 
